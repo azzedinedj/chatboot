@@ -7,7 +7,7 @@ app = Flask(__name__)
 chat_history = []
 
 # 🔑 المفتاح يوضع هنا مباشرة
-API_KEY = f"Bearer {os.getenv('DEEPSEEK_API_KEY')}" 
+API_KEY =  "Bearer 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"
 
 def ask_deepseek(prompt):
     full_prompt = (

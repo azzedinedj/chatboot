@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>مساعد لغة الإشارة - لوحة التحكم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Poppins', sans-serif; }
+        .glass {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.10);
+        }
+        .glass-dark {
+            background: rgba(30,41,59,0.7);
+            backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.20);
+        }
+        .fade-in {
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(24px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+            background: #e5e7eb;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 8px;
+        }
+        .dark .glass { background: rgba(30,41,59,0.7); color: #f1f5f9;}
+        .dark .glass-dark { background: rgba(30,41,59,0.85);}
+        .dark .bg-white { background: #1e293b !important; }
+        .dark .text-gray-800 { color: #f1f5f9 !important; }
+        .dark .text-blue-700 { color: #818cf8 !important; }
+        .dark .border-blue-100 { border-color: #334155 !important; }
+        .dark .bg-blue-50 { background: #334155 !important; }
+        .dark .bg-blue-600 { background: #6366f1 !important; }
+        .dark .bg-blue-700 { background: #4f46e5 !important; }
+        .dark .bg-blue-200 { background: #818cf8 !important; }
+        .dark .bg-blue-100 { background: #64748b !important; }
+        .dark .shadow { box-shadow: 0 2px 8px 0 rgba(31,38,135,0.25);}
+        .transition-bg { transition: background 0.3s, color 0.3s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-violet-100 dark:from-slate-900 dark:to-slate-800 min-h-screen text-gray-800 transition-bg">
+    <!-- Top Navbar -->
+    <header class="flex flex-row items-center justify-between gap-2 px-2 sm:px-4 md:px-10 py-4 glass shadow-lg sticky top-0 z-40 transition-bg">
+        <!-- زر القائمة الجانبية على اليمين -->
+        <button onclick="toggleSidebar()" class="md:hidden bg-gradient-to-r from-blue-600 to-violet-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg z-50 hover:scale-110 transition-all duration-200 order-1">
+            <i class="bi bi-list text-xl"></i>
+        </button>
+        <!-- العنوان في الوسط -->
+        <div class="flex-1 flex justify-center items-center order-2">
+            <span class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300 text-center">مساعد لغة الإشارة</span>
+        </div>
+        <!-- الصورة واسم الضيف في اليسار -->
+        <div class="flex items-center gap-2 sm:gap-4 order-3">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="ضيف" class="w-10 h-10 rounded-full border-2 border-blue-200 shadow">
+            <span class="font-semibold text-blue-500 dark:text-blue-200 text-sm sm:text-base">ضيف</span>
+            <button id="dark-toggle" class="rounded-full p-2 bg-blue-100 dark:bg-blue-700 text-blue-700 dark:text-blue-100 hover:scale-110 transition" title="تبديل الوضع الليلي">
+                <i class="bi bi-moon-stars-fill hidden dark:inline"></i>
+                <i class="bi bi-brightness-high-fill dark:hidden"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-col md:flex-row min-h-[80vh] max-w-7xl mx-auto mt-4 sm:mt-6 md:mt-10 rounded-2xl md:rounded-3xl glass shadow-2xl overflow-hidden transition-bg">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="w-full md:w-72 max-w-full bg-white/90 dark:bg-slate-900/90 md:bg-transparent md:dark:bg-transparent border-l border-blue-100 dark:border-slate-700 flex-shrink-0 flex flex-col transition-all duration-300 z-30 md:static fixed top-0 right-0 h-full md:h-auto md:translate-x-0 translate-x-full md:relative"
+            style="transition: transform 0.3s;">
+            <nav class="flex flex-col gap-2 px-4 py-8">
+                <button onclick="resetChat()" class="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg transition-all duration-200 hover:scale-105">
+                    <i class="bi bi-plus-circle"></i>
+                    بدء محادثة جديدة
+                </button>
+                <div class="mt-6">
+                    <button class="w-full flex items-center justify-between text-blue-700 dark:text-blue-200 font-bold py-2 px-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-700 transition group" onclick="toggleSection('courses-section')">
+                        <span class="flex items-center gap-2"><i class="bi bi-play-circle"></i> كورساتي</span>
+                        <i class="bi bi-chevron-down group-hover:rotate-180 transition-transform" id="courses-section-chevron"></i>
+                    </button>
+                    <ul id="courses-section" class="space-y-2 pl-6 mt-2 transition-all duration-300">
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=8g6lL5gk6w8" target="_blank" class="flex items-center gap-2 text-blue-600 dark:text-blue-300 hover:underline">
+                                <i class="bi bi-youtube"></i> أساسيات لغة الإشارة
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=1t9bZcTgR1A" target="_blank" class="flex items-center gap-2 text-blue-600 dark:text-blue-300 hover:underline">
+                                <i class="bi bi-youtube"></i> إشارات الحياة اليومية
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=Qb6Qw1y7QwA" target="_blank" class="flex items-center gap-2 text-blue-600 dark:text-blue-300 hover:underline">
+                                <i class="bi bi-youtube"></i> إشارات متقدمة
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mt-4">
+                    <button class="w-full flex items-center justify-between text-blue-700 dark:text-blue-200 font-bold py-2 px-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-700 transition group" onclick="toggleSection('about-section')">
+                        <span class="flex items-center gap-2"><i class="bi bi-info-circle"></i> عن التطبيق</span>
+                        <i class="bi bi-chevron-down group-hover:rotate-180 transition-transform" id="about-section-chevron"></i>
+                    </button>
+                    <div id="about-section" class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mt-2 px-3 transition-all duration-300">
+                        هذا التطبيق يساعدك على تعلم لغة الإشارة والتواصل مع الصم والبكم بسهولة عبر الذكاء الاصطناعي ودروس مرئية.
+                    </div>
+                </div>
+            </nav>
+            <!-- احذف زر القائمة الجانبية القديم من هنا -->
+            <!-- <button onclick="toggleSidebar()" class="md:hidden absolute top-4 left-4 ...">...</button> -->
+        </aside>
+        <!-- Main Panel -->
+        <main class="flex-1 flex flex-col relative min-h-[70vh] transition-bg">
+            <!-- Tabs -->
+            <div class="flex items-center border-b border-blue-100 dark:border-slate-700 bg-transparent glass px-2">
+                <button class="tab-btn px-4 py-3 font-bold text-blue-700 dark:text-blue-200 border-b-2 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-700 transition rounded-t-xl" onclick="showTab('chat')" id="tab-chat-btn">
+                    <i class="bi bi-chat-dots"></i> المحادثة
+                </button>
+                <button class="tab-btn px-4 py-3 font-bold text-blue-700 dark:text-blue-200 hover:bg-blue-50 dark:hover:bg-blue-700 transition rounded-t-xl" onclick="showTab('courses')" id="tab-courses-btn">
+                    <i class="bi bi-play-btn"></i> كورسات فيديو
+                </button>
+                <button class="tab-btn px-4 py-3 font-bold text-blue-700 dark:text-blue-200 hover:bg-blue-50 dark:hover:bg-blue-700 transition rounded-t-xl" onclick="showTab('lessons')" id="tab-lessons-btn">
+                    <i class="bi bi-journal-text"></i> الدروس
+                </button>
+                <button class="tab-btn px-4 py-3 font-bold text-blue-700 dark:text-blue-200 hover:bg-blue-50 dark:hover:bg-blue-700 transition rounded-t-xl" onclick="showTab('images')" id="tab-images-btn">
+                    <i class="bi bi-images"></i> صور لغة الإشارة
+                </button>
+            </div>
+            <!-- Chat Tab -->
+            <section id="tab-chat" class="flex flex-col flex-1 fade-in transition-all duration-500">
+                <div id="chatbot-messages" class="flex-1 overflow-y-auto px-4 py-6 md:px-8 scrollbar-thin space-y-4 transition-bg">
+                    <div id="welcome-message" class="flex justify-center fade-in">
+                        <div class="bg-gradient-to-r from-blue-100 to-violet-100 dark:from-blue-900 dark:to-violet-900 rounded-2xl px-6 py-4 shadow text-center text-blue-700 dark:text-blue-200 font-semibold text-lg glass">
+                            👋 مرحبًا بك في مساعد لغة الإشارة! ابدأ المحادثة أو اختر درسًا من اللوحة الجانبية.
+                        </div>
+                    </div>
+                    {% for msg in messages %}
+                    <div class="flex {{ 'justify-end' if msg.role == 'user' else 'justify-start' }} fade-in">
+                        <div class="flex items-end gap-2 max-w-[80%]">
+                            {% if msg.role == 'user' %}
+                                <div class="rounded-full bg-blue-200 dark:bg-blue-700 text-blue-800 dark:text-blue-100 w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-person"></i></div>
+                            {% else %}
+                                <div class="rounded-full bg-blue-600 dark:bg-blue-400 text-white w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-robot"></i></div>
+                            {% endif %}
+                            <div class="rounded-2xl px-4 py-3 shadow glass dark:glass-dark text-base {{ 'bg-blue-600 text-white dark:bg-blue-400 dark:text-blue-900' if msg.role == 'user' else 'bg-blue-50 text-gray-800 dark:bg-blue-900 dark:text-blue-100' }}">
+                                {{ msg.content }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div id="typing-indicator" class="hidden flex justify-start fade-in">
+                        <div class="flex items-end gap-2 max-w-[80%]">
+                            <div class="rounded-full bg-blue-600 dark:bg-blue-400 text-white w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-robot"></i></div>
+                            <div class="rounded-2xl px-4 py-3 shadow glass dark:glass-dark text-base flex items-center gap-2">
+                                <span class="inline-block w-2 h-2 bg-blue-400 rounded-full animate-bounce"></span>
+                                <span class="inline-block w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-150"></span>
+                                <span class="inline-block w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-300"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Floating Input -->
+                <form method="post" onsubmit="return sendMessage(event);" class="sticky bottom-0 left-0 w-full glass dark:glass-dark flex items-center gap-2 px-4 py-3 border-t border-blue-100 dark:border-slate-700 z-10 transition-bg">
+                    <input id="chatbot-input" name="user_input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"
+                        class="flex-1 rounded-xl border border-blue-200 dark:border-blue-700 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-700 transition text-base bg-blue-50 dark:bg-blue-900 text-gray-800 dark:text-blue-100" />
+                    <!-- زر الميكروفون -->
+                    <button type="button" id="voice-btn" class="bg-blue-100 dark:bg-blue-700 text-blue-700 dark:text-blue-100 rounded-full w-12 h-12 flex items-center justify-center text-2xl shadow hover:bg-blue-200 dark:hover:bg-blue-600 transition" title="تسجيل صوتي">
+                        <i class="bi bi-mic"></i>
+                    </button>
+                    <button type="submit" class="bg-gradient-to-r from-blue-600 to-violet-500 hover:from-blue-700 hover:to-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl shadow-lg transition-all duration-200 hover:scale-110">
+                        <i class="bi bi-send"></i>
+                    </button>
+                </form>
+            </section>
+            <!-- Courses Tab -->
+            <section id="tab-courses" class="hidden flex-1 fade-in transition-all duration-500">
+                <div class="grid md:grid-cols-2 gap-6 p-6">
+                    <div class="rounded-2xl glass shadow-lg p-4 flex flex-col gap-2 hover:scale-105 transition-all duration-200">
+                        <iframe class="rounded-xl w-full aspect-video" src="https://www.youtube.com/embed/8g6lL5gk6w8" allowfullscreen></iframe>
+                        <div class="font-bold text-blue-700 dark:text-blue-200">أساسيات لغة الإشارة</div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm">تعلم الحروف والأرقام الأساسية بلغة الإشارة.</div>
+                    </div>
+                    <div class="rounded-2xl glass shadow-lg p-4 flex flex-col gap-2 hover:scale-105 transition-all duration-200">
+                        <iframe class="rounded-xl w-full aspect-video" src="https://www.youtube.com/embed/1t9bZcTgR1A" allowfullscreen></iframe>
+                        <div class="font-bold text-blue-700 dark:text-blue-200">إشارات الحياة اليومية</div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm">تعلم إشارات العبارات اليومية المهمة.</div>
+                    </div>
+                    <div class="rounded-2xl glass shadow-lg p-4 flex flex-col gap-2 hover:scale-105 transition-all duration-200">
+                        <iframe class="rounded-xl w-full aspect-video" src="https://www.youtube.com/embed/Qb6Qw1y7QwA" allowfullscreen></iframe>
+                        <div class="font-bold text-blue-700 dark:text-blue-200">إشارات متقدمة</div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm">تعمق في إشارات الجمل والعبارات المعقدة.</div>
+                    </div>
+                </div>
+            </section>
+            <!-- Lessons Tab -->
+            <section id="tab-lessons" class="hidden flex-1 fade-in transition-all duration-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                    <div class="rounded-2xl glass shadow-lg p-5 flex flex-col gap-3 hover:scale-105 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <i class="bi bi-alphabet text-3xl text-blue-600 dark:text-blue-300"></i>
+                            <span class="font-bold text-blue-700 dark:text-blue-200">حروف لغة الإشارة</span>
+                        </div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm">تعلم الأبجدية العربية بلغة الإشارة مع صور وفيديو.</div>
+                        <button class="mt-2 bg-blue-600 dark:bg-blue-400 text-white dark:text-blue-900 rounded-lg px-4 py-1.5 font-semibold hover:bg-blue-700 dark:hover:bg-blue-500 transition">ابدأ الدرس</button>
+                    </div>
+                    <div class="rounded-2xl glass shadow-lg p-5 flex flex-col gap-3 hover:scale-105 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <i class="bi bi-123 text-3xl text-violet-600 dark:text-violet-300"></i>
+                            <span class="font-bold text-blue-700 dark:text-blue-200">الأرقام والإشارات</span>
+                        </div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm">تعلم الأرقام والإشارات الحسابية الأساسية.</div>
+                        <button class="mt-2 bg-violet-600 dark:bg-violet-400 text-white dark:text-violet-900 rounded-lg px-4 py-1.5 font-semibold hover:bg-violet-700 dark:hover:bg-violet-500 transition">ابدأ الدرس</button>
+                    </div>
+                    <div class="rounded-2xl glass shadow-lg p-5 flex flex-col gap-3 hover:scale-105 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <i class="bi bi-emoji-smile text-3xl text-blue-400 dark:text-blue-200"></i>
+                            <span class="font-bold text-blue-700 dark:text-blue-200">العبارات اليومية</span>
+                        </div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm">تعلم أهم العبارات اليومية للتواصل السريع.</div>
+                        <button class="mt-2 bg-blue-400 dark:bg-blue-600 text-white dark:text-blue-100 rounded-lg px-4 py-1.5 font-semibold hover:bg-blue-500 dark:hover:bg-blue-700 transition">ابدأ الدرس</button>
+                    </div>
+                    <!-- Add more lesson cards as needed -->
+                </div>
+            </section>
+            <!-- Images Tab -->
+            <section id="tab-images" class="hidden flex-1 fade-in transition-all duration-500">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 p-6">
+                    <div class="rounded-2xl glass shadow-lg relative overflow-hidden group hover:scale-105 transition-all duration-200">
+                        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="أساسيات لغة الإشارة" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/80 to-transparent text-white p-3">
+                            <div class="font-bold">أساسيات لغة الإشارة</div>
+                            <div class="text-xs">الحروف والأرقام</div>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl glass shadow-lg relative overflow-hidden group hover:scale-105 transition-all duration-200">
+                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="التواصل الاجتماعي" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/80 to-transparent text-white p-3">
+                            <div class="font-bold">التواصل الاجتماعي</div>
+                            <div class="text-xs">تعبير عن المشاعر والأفكار</div>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl glass shadow-lg relative overflow-hidden group hover:scale-105 transition-all duration-200">
+                        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="الكلمات اليومية" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/80 to-transparent text-white p-3">
+                            <div class="font-bold">الكلمات اليومية</div>
+                            <div class="text-xs">مفردات الحياة اليومية</div>
+                        </div>
+                    </div>
+                    <!-- More images as needed -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Floating sidebar toggle for mobile -->
+   
+
+    <script>
+        // Tabs logic
+        function showTab(tab) {
+            ['chat', 'courses', 'lessons', 'images'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                document.getElementById('tab-' + t + '-btn').classList.remove('border-b-2', 'border-blue-600', 'dark:border-blue-400', 'bg-blue-50', 'dark:bg-blue-700');
+            });
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.getElementById('tab-' + tab + '-btn').classList.add('border-b-2', 'border-blue-600', 'dark:border-blue-400', 'bg-blue-50', 'dark:bg-blue-700');
+        }
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            // إذا كان على الجوال
+            if (window.innerWidth < 768) {
+                if (sidebar.classList.contains('translate-x-full')) {
+                    sidebar.classList.remove('translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    sidebar.style.display = 'flex';
+                } else {
+                    sidebar.classList.add('translate-x-full');
+                    sidebar.classList.remove('translate-x-0');
+                    // بعد انتهاء التحول أخفِ الشريط الجانبي فعلياً
+                    setTimeout(() => {
+                        if (sidebar.classList.contains('translate-x-full')) {
+                            sidebar.style.display = '';
+                        }
+                    }, 300);
+                }
+            } else {
+                sidebar.classList.toggle('hidden');
+            }
+        }
+
+        // عند تحميل الصفحة: أخفِ الشريط الجانبي على الجوال
+        window.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            if(window.innerWidth < 768) {
+                sidebar.classList.add('translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                sidebar.style.display = '';
+            } else {
+                sidebar.classList.remove('translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                sidebar.style.display = '';
+            }
+        });
+
+        // عند تغيير حجم الشاشة: تأكد من إظهار/إخفاء الشريط حسب الحجم
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if(window.innerWidth < 768) {
+                if (!sidebar.classList.contains('translate-x-full') && !sidebar.classList.contains('translate-x-0')) {
+                    sidebar.classList.add('translate-x-full');
+                    sidebar.style.display = '';
+                }
+            } else {
+                sidebar.classList.remove('translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                sidebar.style.display = '';
+            }
+        });
+
+        // Collapsible sidebar sections
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            const chevron = document.getElementById(id + '-chevron');
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+            } else {
+                section.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+            }
+        }
+        // Reset chat
+        function resetChat() {
+            fetch(window.location.pathname + '?reset=1', {method: 'POST'})
+                .then(() => window.location.reload());
+        }
+        // Chat send
+        function sendMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatbot-input');
+            const msg = input.value.trim();
+            if (!msg) return false;
+            document.getElementById('welcome-message')?.classList.add('hidden');
+
+            // أضف رسالة المستخدم مباشرة
+            const chat = document.getElementById('chatbot-messages');
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex justify-end fade-in";
+            userMsg.innerHTML = `
+                <div class="flex items-end gap-2 max-w-[80%]">
+                    <div class="rounded-full bg-blue-200 dark:bg-blue-700 text-blue-800 dark:text-blue-100 w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-person"></i></div>
+                    <div class="rounded-2xl px-4 py-3 shadow glass dark:glass-dark text-base bg-blue-600 text-white dark:bg-blue-400 dark:text-blue-900">
+                        ${escapeHtml(msg)}
+                    </div>
+                </div>
+            `;
+            chat.appendChild(userMsg);
+
+            // أضف مؤشر الكتابة كعنصر جديد
+            const typingDiv = document.createElement('div');
+            typingDiv.className = "flex justify-start fade-in";
+            typingDiv.id = "typing-indicator-dynamic";
+            typingDiv.innerHTML = `
+                <div class="flex items-end gap-2 max-w-[80%]">
+                    <div class="rounded-full bg-blue-600 dark:bg-blue-400 text-white w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-robot"></i></div>
+                    <div class="rounded-2xl px-4 py-3 shadow glass dark:glass-dark text-base flex items-center gap-2">
+                        <span class="inline-block w-2 h-2 bg-blue-400 rounded-full animate-bounce"></span>
+                        <span class="inline-block w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-150"></span>
+                        <span class="inline-block w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-300"></span>
+                    </div>
+                </div>
+            `;
+            chat.appendChild(typingDiv);
+            scrollChatToBottom();
+
+            // أرسل الرسالة إلى السيرفر (AJAX)
+            fetch(window.location.pathname, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: 'user_input=' + encodeURIComponent(msg)
+            })
+            .then(response => {
+                // جرب الحصول على JSON من الرد
+                return response.text().then(text => {
+                    try {
+                        return JSON.parse(text);
+                    } catch {
+                        return {reply: null};
+                    }
+                });
+            })
+            .then(data => {
+                typingDiv.remove();
+                // تحقق من وجود data.reply ونصه غير فارغ
+                let reply = (data && typeof data.reply === "string" && data.reply.trim()) ? data.reply : "تعذر الحصول على رد من البوت.";
+                const botMsg = document.createElement('div');
+                botMsg.className = "flex justify-start fade-in";
+                botMsg.innerHTML = `
+                    <div class="flex items-end gap-2 max-w-[80%]">
+                        <div class="rounded-full bg-blue-600 dark:bg-blue-400 text-white w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-robot"></i></div>
+                        <div class="rounded-2xl px-4 py-3 shadow glass dark:glass-dark text-base bg-blue-50 text-gray-800 dark:bg-blue-900 dark:text-blue-100">
+                            ${escapeHtml(reply)}
+                        </div>
+                    </div>
+                `;
+                chat.appendChild(botMsg);
+                scrollChatToBottom();
+            })
+            .catch(() => {
+                typingDiv.remove();
+                const botMsg = document.createElement('div');
+                botMsg.className = "flex justify-start fade-in";
+                botMsg.innerHTML = `
+                    <div class="flex items-end gap-2 max-w-[80%]">
+                        <div class="rounded-full bg-blue-600 dark:bg-blue-400 text-white w-9 h-9 flex items-center justify-center text-xl shadow"><i class="bi bi-robot"></i></div>
+                        <div class="rounded-2xl px-4 py-3 shadow glass dark:glass-dark text-base bg-blue-50 text-gray-800 dark:bg-blue-900 dark:text-blue-100">
+                            حدث خطأ أثناء الاتصال بالخادم.
+                        </div>
+                    </div>
+                `;
+                chat.appendChild(botMsg);
+                scrollChatToBottom();
+            });
+
+            input.value = '';
+            return false;
+        }
+
+        // حماية من إدخال HTML
+        function escapeHtml(text) {
+            var map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Scroll chat to bottom on new message
+        function scrollChatToBottom() {
+            const chat = document.getElementById('chatbot-messages');
+            chat.scrollTop = chat.scrollHeight;
+        }
+        window.onload = function() {
+            scrollChatToBottom();
+            // Hide welcome if messages exist
+            if (document.querySelectorAll('#chatbot-messages > .flex').length > 1) {
+                document.getElementById('welcome-message')?.classList.add('hidden');
+            }
+        };
+        // Responsive: hide sidebar by default on mobile
+        if(window.innerWidth < 768) {
+            document.getElementById('sidebar').classList.add('hidden');
+        }
+        // Dark mode toggle
+        const darkToggle = document.getElementById('dark-toggle');
+        darkToggle.onclick = function() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        };
+        // Persist dark mode
+        if(localStorage.getItem('theme') === 'dark' || (window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme'))) {
+            document.body.classList.add('dark');
+        }
+        // Animate tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('section[id^="tab-"]').forEach(sec => {
+                    sec.classList.remove('fade-in');
+                });
+                setTimeout(() => {
+                    document.querySelector('section:not(.hidden)[id^="tab-"]')?.classList.add('fade-in');
+                }, 50);
+            });
+        });
+
+        // تسجيل الصوت وتحويله إلى نص
+        let recognizing = false;
+        let recognition;
+        const voiceBtn = document.getElementById('voice-btn');
+        const chatbotInput = document.getElementById('chatbot-input');
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ar-DZ'; // العربية الجزائرية
+            recognition.interimResults = false;
+            recognition.continuous = false;
+
+            recognition.onstart = function() {
+                recognizing = true;
+                voiceBtn.classList.add('bg-blue-600', 'text-white');
+                voiceBtn.classList.remove('bg-blue-100', 'text-blue-700', 'dark:bg-blue-700', 'dark:text-blue-100');
+            };
+            recognition.onend = function() {
+                recognizing = false;
+                voiceBtn.classList.remove('bg-blue-600', 'text-white');
+                voiceBtn.classList.add('bg-blue-100', 'text-blue-700', 'dark:bg-blue-700', 'dark:text-blue-100');
+            };
+            recognition.onresult = function(event) {
+                if (event.results.length > 0) {
+                    chatbotInput.value = event.results[0][0].transcript;
+                    chatbotInput.focus();
+                }
+            };
+            voiceBtn.onclick = function() {
+                if (recognizing) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            };
+        } else {
+            // إذا لم يكن مدعوماً أخفِ الزر
+            voiceBtn.style.display = 'none';
+        }
+
+        // Responsive sidebar show/hide for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            // إذا كان على الجوال
+            if (window.innerWidth < 768) {
+                if (sidebar.classList.contains('translate-x-full')) {
+                    sidebar.classList.remove('translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    sidebar.style.display = 'flex';
+                } else {
+                    sidebar.classList.add('translate-x-full');
+                    sidebar.classList.remove('translate-x-0');
+                    // بعد انتهاء التحول أخفِ الشريط الجانبي فعلياً
+                    setTimeout(() => {
+                        if (sidebar.classList.contains('translate-x-full')) {
+                            sidebar.style.display = '';
+                        }
+                    }, 300);
+                }
+            } else {
+                sidebar.classList.toggle('hidden');
+            }
+        }
+        // Hide sidebar by default on mobile
+        window.addEventListener('DOMContentLoaded', function() {
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('translate-x-full');
+            }
+        });
+    </script>
+</body>
+</html>

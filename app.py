@@ -1,22 +1,27 @@
 from flask import Flask, render_template, request, jsonify
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv  # ✅ تحميل المكتبة لقراءة ملف .env
+
+# ✅ تحميل متغيرات البيئة من ملف .env
+load_dotenv()
 
 app = Flask(__name__)
 chat_history = []
 
-# إعداد مفتاح Gemini
+# ✅ جلب مفتاح API من متغير البيئة
 API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# إنشاء الموديل
+# ✅ إنشاء الموديل
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def ask_gemini(prompt):
     try:
         full_prompt = (
-            "أنت مساعد ذكي متخصص في تعليم لغة الإشارة للصم والبكم، تفهم الدارجة الجزائرية جيداً. "
-            "يجب أن تكون إجاباتك دقيقة، مختصرة، وعملية، وتركز على لغة الإشارة الجزائرية والعالمية. "
+            "أنت مساعد ذكي متخصص في تعليم لغة الإشارة للصم والبكم، "
+            "تفهم الدارجة الجزائرية جيداً. يجب أن تكون إجاباتك دقيقة، مختصرة، "
+            "وعملية، وتركز على لغة الإشارة الجزائرية والعالمية. "
             "ابدأ دائماً إجابتك بالتحية المناسبة. "
             f"السؤال: {prompt.strip()}"
         )
@@ -34,12 +39,14 @@ def index():
             chat_history.append({"role": "user", "content": user_input})
             reply = ask_gemini(user_input)
             chat_history.append({"role": "assistant", "content": reply})
+            # إذا كان الطلب من نوع JSON (مثل AJAX)
             if request.headers.get("Accept") == "application/json":
                 return jsonify(reply=reply)
+    # أول رسالة من البوت
     if not chat_history:
         chat_history.append({
             "role": "assistant",
-            "content": "مرحباً! أنا مساعدك الذكي لتعلم لغة الإشارة. كيف يمكنني مساعدتك اليوم؟"
+            "content": "مرحباً! 👋 أنا مساعدك الذكي لتعلم لغة الإشارة. كيف يمكنني مساعدتك اليوم؟"
         })
     return render_template("index.html", messages=chat_history)
 
